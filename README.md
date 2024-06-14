@@ -23,13 +23,13 @@ Following the example of [Degnan et al. Molecular Plant Pathology 2022](https://
 
 #### Find the target gene in the fungal genome
 
-Because annotations in fungal genomes are typically sparse, start by taking the *EF1a* protein sequence from the model organism *Arabidopsis thaliana*. 
+Because annotations in fungal genomes are typically sparse, start by taking the *EF1a* protein sequence from the model plant organism *Arabidopsis thaliana*. 
 
 Use the [TAIR database](https://www.arabidopsis.org/) to search for the *EF1a* protein. Make sure to choose `Protein` from the drop down list before clicking the search button.
 
 ![TAIR search](tair_search.png)
 
-Click the first isoform, `AT1G07940.1`. On the protein detail page, scroll down to `Sequence`, and click `Send to BLAST`. Copy the amino acid sequence in the input box.
+Click the first isoform, `AT1G07940.1`. On the protein detail page, scroll down to `Sequence`, and click `Send to BLAST`. Copy the amino acid sequence in the `Input` box.
 
 ![At send to BLAST](At_send_to_blast.png)
 
@@ -145,7 +145,7 @@ To produce a `.fasta` file with this sequence, run the following command in the 
 python slice_fasta.py 298 250 Cp_EF1a_tx_cds.fasta dsRNA_sequence_EF1a_250bp.fasta
 ```
 
-This will produce a new `.fasta` file called `dsRNA_sequence_EF1a_250bp.fasta` with the desired sequence.
+This will produce a new `.fasta` file called `dsRNA_sequence_EF1a_250bp.fasta`, which contains the desired sequence.
 
 #### Re-check redundancy with the final sequence
 
