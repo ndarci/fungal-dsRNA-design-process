@@ -53,7 +53,7 @@ This will show you the protein-protein alignments between *Arabidopsis* *EF1a* a
 
 There are 85 hits, and the first few dozen are essentially the same protein from the same coordinates, with slightly varying splice patterns. Their transcript sequence will be so similar, if not identical, that targeting one should target them all.
 
-Click the first hit, `Crypa2|355031` (note that different BLAST runs may produce different orderings of these first few near-synonymous proteins, I am not sure how to explain this). This page displays lots of information about the protein.
+Click the first hit, `Crypa2|355031` (note that different BLAST runs may produce different orderings of these first few near-synonymous proteins, possibly due to MycoCosm shuffling the order of hits with identical scores). This page displays lots of information about the protein.
 
 ![Cp EF1a detail](Cp_EF1a_detail.png)
 
@@ -69,7 +69,7 @@ From here, we can work directly with the *Cryphonectria* transcript sequence of 
 
 #### Check for redundancy across the genome
 
-This allows us to use BLAST again to check for copies or family members of this gene in other regions of the *Cryphonectria* genome.
+Now you can use BLAST again to check for copies or family members of this gene in other regions of the *Cryphonectria* genome.
 
 Scroll down to `Transcript(1867 bp)/CDS Sequence(1395 bp)`, and copy the coding sequence (CDS) only (i.e. the red characters).
 
@@ -119,7 +119,7 @@ This plot suggests that there is a ~250bp region, between bases 250 and 500 in t
 
 This is ideal for us, because 250bp is a useful length - both for imaging on electrophoresis gels, and for pulling a high yield from RNA synthesis kits.
 
-You can check out another interesting piece of the NCBI BLAST results by clicking `Distance tree of results`. This tool generates a distance tree based on the pairwise alignments to the query sequence.
+You can explore another interesting piece of the NCBI BLAST results by clicking `Distance tree of results`. This tool generates a distance tree based on the pairwise alignments to the query sequence.
 
 Note that this is not necessarily a robust phylogenetic tree, only a clustering of sequences based on the ~1400bp query we input to BLAST.
 
@@ -153,11 +153,17 @@ All that's left to do now is to run one final BLAST, verifying that our chosen d
 
 ![NCBI BLAST with final dsRNA sequence](ncbiBLAST_final_dsRNA_seq.png)
 
-In order to recover all 10 original hits from the CDS BLAST for this specific region and set of species, I did need to decrease the search stringency by changing the `Program Selection` -> `Optimize for` setting from `Highly similar sequences (megablast)` to `More dissimilar sequences (discontinuous megablast)`. We are still considering this valid, with the idea that the ultimate test of effectiveness is still the biological result, and that these BLAST parameter thresholds are somewhat arbitrary.
+In order to recover all 10 original hits from the *EF1a* CDS BLAST for this specific region and set of species, I did need to decrease the search stringency by changing the `Program Selection` -> `Optimize for` setting from `Highly similar sequences (megablast)` to `More dissimilar sequences (discontinuous megablast)`. We are still considering this valid, with the idea that the ultimate test of effectiveness is still the biological result, and that these BLAST parameter thresholds are somewhat arbitrary.
+
+![NCBI BLAST with final dsRNA sequence results - descriptions](ncbiBLAST_finaldsRNA_descriptions.png)
+
+![NCBI BLAST with final dsRNA sequence results - graphic summary](ncbiBLAST_finaldsRNA_graphicsummary.png)
+
+These outputs show us the same 10 hits from the CDS blast, this time aligning only to the 250bp dsRNA sequence. Notice the near-total coverage across all hits in the graphic summary. Hopefully, this will translate to growth inhibition *in vitro*!
 
 #### Order oligos to produce dsRNA molecules
 
-The final task in this process is now to order DNA molecules with the 250bp sequence stored in `dsRNA_sequence_EF1a_250bp.fasta`, and use molecular kits to convert these molecules to dsRNA!
+The final task in this process is now to order DNA molecules with the 250bp sequence stored in `dsRNA_sequence_EF1a_250bp.fasta`, and use molecular kits to convert these molecules to dsRNA.
 
 Next steps include designing other dsRNA sequences for alternate target genes, and designing scrambled dsRNAs with fluorescent labels for the uptake assay.
 

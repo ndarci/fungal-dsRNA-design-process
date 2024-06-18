@@ -1,7 +1,8 @@
 import sys    
 
 def clean_fasta(filename):
-    '''Reads in a fasta file with extra whitespace, and reads the data into a string with no whitespace'''
+    '''Reads in a fasta file with extra whitespace, 
+    and reads the data into a string with no whitespace'''
     with open(filename, 'r') as infile:
         # add the header unchanged
         header = infile.readline()
