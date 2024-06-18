@@ -153,5 +153,11 @@ All that's left to do now is to run one final BLAST, verifying that our chosen d
 
 ![NCBI BLAST with final dsRNA sequence](ncbiBLAST_final_dsRNA_seq.png)
 
+In order to recover all 10 original hits from the CDS BLAST for this specific region and set of species, I did need to decrease the search stringency by changing the `Program Selection` -> `Optimize for` setting from `Highly similar sequences (megablast)` to `More dissimilar sequences (discontinuous megablast)`. We are still considering this valid, with the idea that the ultimate test of effectiveness is still the biological result, and that these BLAST parameter thresholds are somewhat arbitrary.
 
+#### Order oligos to produce dsRNA molecules
+
+The final task in this process is now to order DNA molecules with the 250bp sequence stored in `dsRNA_sequence_EF1a_250bp.fasta`, and use molecular kits to convert these molecules to dsRNA!
+
+Next steps include designing other dsRNA sequences for alternate target genes, and designing scrambled dsRNAs with fluorescent labels for the uptake assay.
 
