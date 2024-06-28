@@ -17,7 +17,7 @@ def slice_fasta(start, length, infilename, outfilename):
     
     # get a slice of length bases starting at start
     slice = indata[start:start+length]
-    sliced_fasta = '>' + outfilename.split('.')[0] + '\n' + slice
+    sliced_fasta = '>' + outfilename.split('.')[0].split('/')[-1] + '\n' + slice
 
     return sliced_fasta
 
