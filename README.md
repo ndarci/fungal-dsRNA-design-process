@@ -11,6 +11,8 @@ We want to design dsRNA molecules that will stop the growth of plant fungal path
 
 We are testing this with the American chestnut tree (*Castanea dentata*) and its associated fungal blight pathogen (*Cryphonectria parasitica*). We are also designing targets for Dutch Elm Disease (*Ophiostoma novo-ulmi*), Butternut Canker (*Ophiognomonia clavigignenti-juglandacearum* (Ocj)), and Laurel wilt (*Harringtonia lauricola*).
 
+To follow this tutorial, start by cloning this repository.
+
 ## Stage 1: Targeting broadly conserved essential genes *in vitro* 
 
 Before worrying about off-target effects, we are just testing if we can stop fungal growth with ANY gene, especially a highly conserved and essential gene. If this doesn't work, there is no reason to design species-specific targets.
@@ -19,103 +21,119 @@ We are also not involving the tree at this stage, which introduces additional qu
 
 ### Choosing a dsRNA sequence for a target gene
 
-Following the example of [Degnan et al. Molecular Plant Pathology 2022](https://doi.org/10.1111/mpp.13286), we are starting by targeting the *EF1a* gene, Translation Elongation Factor 1a. We will use *Cryphonectria parasitica* as our main target species, but also assess the potential effects on the other three pathogens.
+Following the example of [Degnan et al. *Molecular Plant Pathology* 2022](https://doi.org/10.1111/mpp.13286), we are starting by targeting the *EF1a* gene, Translation Elongation Factor 1a. We will use *Cryphonectria parasitica* as our main target species, but also assess the potential effects on the other three pathogens.
 
 #### Find the target gene in the fungal genome
 
-Because annotations in fungal genomes are typically sparse, start by taking the *EF1a* protein sequence from the model plant organism *Arabidopsis thaliana*. 
+Because annotations in our *Cryphonectria* genome are sparse, start by finding the nucleotide sequence of the *EF1a* gene in the *Austropuccinia Psidii* genome (the organism studied in the Degnan paper).
 
-Use the [TAIR database](https://www.arabidopsis.org/) to search for the *EF1a* protein. Make sure to choose `Protein` from the drop down list before clicking the search button.
-
-![TAIR search](img/tair_search.png)
-
-Click the first isoform, `AT1G07940.1`. On the protein detail page, scroll down to `Sequence`, and click `Send to BLAST`. Copy the amino acid sequence in the `Input` box.
-
-![At send to BLAST](img/At_send_to_blast.png)
-
-Open a text editor, and type in a useful FASTA header like `>At_EF1a_prot`. Then, paste in the *Arabidopsis* *EF1a* protein sequence. Save the file as `data/At_EF1a_prot.fasta`, and clean up whitespace by running the following in your terminal:
+Referring to [Supplementary Table 1 from the Degnan paper](https://bsppjournals.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1111%2Fmpp.13286&file=mpp13286-sup-0004-TableS1.docx), the forward primer sequence (minus the T7 promoter, in bold) for *EF1a* in *A. psidii* is:
 
 ```
-python scripts/clean_fasta.py data/At_EF1a_prot.fasta
+ATGCTCCTGGACATCGTG
+```
+
+Copy this sequence, and open the [NCBI BLASTN tool](https://blast.ncbi.nlm.nih.gov/Blast.cgi). Under `Enter Query Sequence`, type a useful fasta header like `>Apsidii_EF1a_primerF`, followed by a newline and the above sequence. Under `Organism`, add `Austropuccinia psidii (taxid:181123)`.
+
+![](img/Apsidii_blast_search_EF1a.png)
+
+Leave the options at their defaults, and click `BLAST`. This will compare the forward primer sequence against the *A. psidii* genome and return the strongest alignments.
+
+![](img/Apsidii_blast_results_EF1a.png)
+
+Of the many hits on the results page, the first alignment should give us enough sequence to capture the uniqueness of the *EF1a* gene. Click this first alignment, `Austropuccinia psidii voucher T17_00968 translation elongation factor 1-alpha gene, partial cds`. 
+
+![](img/Apsidii_EF1a_detail1.png)
+
+Scroll to the bottom of the gene detail page, and copy the whole nucleotide sequence.
+
+![](img/Apsidii_EF1a_detail2.png)
+
+Now, create a new blank text file on your computer, and type in a useful `.fasta` header like ">Apsidii_EF1a_partialCDS_MK017943.1". On a new line below this header, paste the sequence copied from the gene detail page above. Save the file in the `data` directory as `Apsidii_EF1a_partialCDS.fasta`.
+
+Run the following command to trim coordinates and whitespace from the sequence.
+
+```
+python scripts/clean_fasta.py data/Apsidii_EF1a_partialCDS.fasta
 ```
 
 Now, open the `BLAST` tab on the [*Cryphonectria* genome website](https://mycocosm.jgi.doe.gov/Crypa2/Crypa2.home.html) at JGI MycoCosm. Under `Query Sequences`, paste the entirety of your new `.fasta` file.
 
-Under `Search Criteria`, select `blastp: blast protein vs. protein`, and click the `Cryphonectria parasitica v2.0 All Gene models (proteins)` database. Leave the other settings at their defaults.
+Under `Search Criteria`, select `blastn: blast nucleotide vs. nucleotide`, and click the `Cryphonectria parasitica v2.0 masked nuclear assembly` database. Leave the other settings at their defaults.
 
-![At protein BLAST](img/At_prot_blast.png)
+![](img/Cparasitica_blast_search_partialEF1a.png)
 
-Click `Run blastp`.
+Click `Run blastn`.
 
-This will show you the protein-protein alignments between *Arabidopsis* *EF1a* and every protein in *Cryphonectria*. We use protein sequences because these will be more conserved across plants and fungi than nucleotide sequences.
+This will show you the nucleotide-nucleotide alignments between the chunk of *A. psidii* *EF1a* we selected and the full *Cryphonectria* genome.
 
-![Cp BLASTP results](img/Cp_blastp_results.png)
+![](img/Cparasitica_blast_results_partialEF1a.png)
 
-There are 85 hits, and the first few dozen are essentially the same protein from the same coordinates, with slightly varying splice patterns. Their transcript sequence will be so similar, if not identical, that targeting one should target them all.
+To visualize the gene models in this genomic region, click on the alignment, `Crypa2|scaffold_2:3230197-3230643`. This will take you to the *Cryphonectria* genome browser at the alignment position.
 
-Click the first hit, `Crypa2|355031` (note that different BLAST runs may produce different orderings of these first few near-synonymous proteins, possibly due to MycoCosm shuffling the order of hits with identical scores). This page displays lots of information about the protein.
+![](img/Cparasitica_partialEF1a_alignment_browser.png)
 
-![Cp EF1a detail](img/Cp_EF1a_detail.png)
+Among many other things, this genome browser interface shows us the gene models that map to the genomic region our query aligned with. Scroll down to the `GeneCatalog` section, and click on the model there (the blue gene). While there are other slightly different splice variants to choose from, their transcript sequence will be so similar, if not identical, that targeting one should target them all.
 
-Notice that the computationally-generated annotations list "Translation Elongation Factor EF1A" multiple times — some validation that this is the right gene!
+Clicking this model takes us to its detail page. Most of the annotations under `Interpro Desc` mention "Translation elongation factor", giving some validation that we've found the correct gene.
 
-To get the genomic DNA and transcript sequence for this gene, click the blue and red exon/intron graphic below the table of information.
+![](img/Cparasitica_EF1a_detail.png)
 
-On this new page, uncheck `Display genomic coordinates` and click `Update Display` to make copy-pasting easier.
-
-![Cp EF1a sequence](img/Cp_EF1a_sequence.png)
-
-From here, we can work directly with the *Cryphonectria* transcript sequence of the *EF1a* gene, rather than the *Arabidopsis* protein sequence.
+From here, we can work directly with the *Cryphonectria* transcript sequence of the *EF1a* gene, rather than the *A. psidii* partial CDS sequence.
 
 #### Check for redundancy across the genome
 
 Now you can use BLAST again to check for copies or family members of this gene in other regions of the *Cryphonectria* genome.
 
+To get the transcript/CDS sequence for this gene, click the blue and red exon/intron graphic below the table of information.
+
+![](img/Cparasitica_EF1a_sequence.png)
+
 Scroll down to `Transcript(1867 bp)/CDS Sequence(1395 bp)`, and copy the coding sequence (CDS) only (i.e. the red characters).
 
-Open another text file, input another useful FASTA header like `>Cp_EF1a_tx_cds`, and paste in the *Cryphonectria* *EF1a* CDS sequence. Save this file as `data/Cp_EF1a_tx_cds.fasta`, and clean it up with:
+Open another text file, input another useful FASTA header like `>Cparasitica_EF1a_CDS_355033`, and paste in the *Cryphonectria* *EF1a* CDS sequence. Save this file as `data/Cparasitica_EF1a_CDS.fasta`, and clean it up with:
 
 ```
-python scripts/clean_fasta.py data/Cp_EF1a_tx_cds.fasta
+python scripts/clean_fasta.py data/Cparasitica_EF1a_CDS.fasta
 ```
 
 Return to the MycoCosm `BLAST` tab, and paste the entirety of this new `.fasta` file into the `Query Sequences` box.
 
-This time, under `Search Criteria`, select `blastn: blast nucleotide vs. nucleotide`, and click the `Cryphonectria parasitica v2.0 masked nuclear assembly` database. Leave the other settings at their defaults.
+Again, select `blastn: blast nucleotide vs. nucleotide`, and click the `Cryphonectria parasitica v2.0 masked nuclear assembly` database. Leave the other settings at their defaults.
 
-![Cp transcript BLAST](img/Cp_tx_blast.png)
+![](img/Cparasitica_blast_search_fullEF1a.png)
 
 Click `Run blastn`.
 
 This will show you the nucleotide-nucleotide alignments between *Cryphonectria* *EF1a* and the full *Cryphonectria* genome. We use the CDS nucleotide sequence because this is the functional mRNA sequence that we will be targeting in the living fungus.
 
-![Cp BLASTN results](img/Cp_blastn_results.png)
+![](img/Cparasitica_blast_results_fullEF1a.png)
 
 Fortunately, there is just one hit across the entire genome, making this gene a promising target. Hopefully, when the gene is silenced, a redundant family member will not replace its function.
 
 #### Find the most conserved region across target species
 
-The next step is to check whether this same target gene sequence exists in the three other target fungal species. To start this, open up [NCBI BLAST](https://blast.ncbi.nlm.nih.gov/Blast.cgi), and click `Nucleotide BLAST`. Upload the same *Cryphonectria* *EF1a* transcript CDS sequence from before, `data/Cp_EF1a_tx_cds.fasta`. Use the `Add organism` button to add our four species: 
+The next step is to check whether this same target gene sequence exists in the three other target fungal species. To start this, open up [NCBI BLAST](https://blast.ncbi.nlm.nih.gov/Blast.cgi), and click `Nucleotide BLAST`. Upload the same *Cryphonectria* *EF1a* transcript CDS sequence from before, `data/Cparasitica_EF1a_CDS.fasta`. Use the `Add organism` button to add our four species: 
 * Cryphonectria parasitica EP155 (taxid:660469)
 * Ophiostoma novo-ulmi subsp. novo-ulmi (taxid:170179)
 * Ophiognomonia clavigignenti-juglandacearum (taxid:218668)
 * Harringtonia lauricola (taxid:483707)
 
-![All species NCBI BLAST](img/allspecies_ncbiBLAST.png)
+![](img/allspecies_blast_search_EF1a.png)
 
 Leave the other settings at their defaults, and click `BLAST`.
 
 Once the job finishes running, the results page will show you the nucleotide-nucleotide alignments across all four species.
 
-![NCBI BLAST result descriptions](img/ncbiBLAST_descriptions.png)
+![](img/allspecies_blast_results_descriptions_EF1a.png)
 
 This table gives you information about each of the 10 hits across the four genomes. Promisingly, all four species are represented, and every hit has an annotation related to "Translation Elongation Factor 1 alpha." It also makes sense that the *Cryphonectria* hit is at the top of the table, with 100% identity to the query.
 
 Exploring the results further, the `Graphic Summary` tab shows you how each of the BLAST hits align to each other along the sequence.
 
-![NCBI BLAST result graphic summary](img/ncbiBLAST_graphicsummary.png)
+![](img/allspecies_blast_results_graphic_EF1a.png)
 
-This plot suggests that there is a ~250bp region, between bases 250 and 500 in the query, that is conserved across all four species. 
+This plot suggests that there is a ~250bp region, between bases 250 and 500 in the query, that is largely conserved across all four species. 
 
 This is ideal for us, because 250bp is a useful length - both for imaging on electrophoresis gels, and for pulling a high yield from RNA synthesis kits.
 
@@ -123,7 +141,7 @@ You can explore another interesting piece of the NCBI BLAST results by clicking 
 
 Note that this is not necessarily a robust phylogenetic tree, only a clustering of sequences based on the ~1400bp query we input to BLAST.
 
-![NCBI BLAST result distance tree](img/ncbiBLAST_tree.png)
+![](img/allspecies_tree_EF1a.png)
 
 Promisingly, though, all four species cluster into their own sub-trees, and the *Cryphonectria* hit clusters most closely to the query. It also turns out that *Cryphonectria* and *Ophiognomonia* belong to the same order, *Diaporthales*, while the other two species belong to the order *Ophiostomatales*. This could explain why *Cryphonectria* and *Ophiognomonia* form their own sub-tree as well.
 
@@ -133,16 +151,16 @@ From here, we can now choose our final 250bp dsRNA sequence to target the *EF1a*
 
 Back in the `Graphic Summary` tab, select the rightmost-aligning sequence, and click `Alignment`. We choose the rightmost-aligning sequence to maximize the amount of overlap across all 10 hits with a single 250bp sequence.
 
-![NCBI BLAST graphic summary with alignment selected](img/ncbiBLAST_graphicsummary_selected.png)
+![](img/allspecies_blast_results_graphic_EF1a_selected.png)
 
 This page shows base-by-base alignment for the Ocj *EF1a* gene to the query sequence. Notice that the alignment graphic starts with `Query` coordinate 298, where `Sbjct` coordinate is 1. This means our final dsRNA sequence will be the 250 bases starting at base 298 in the original *Cryphonectria* *EF1a* transcript CDS sequence (the query). 
 
-![NCBI BLAST Ocj alignment to Cp EF1a](img/ncbiBLAST_Ocj_alignment.png)
+![](img/allspecies_blast_results_graphic_EF1a_Ocj_alignment.png)
 
 To produce a `.fasta` file with this sequence, run the following command in the terminal:
 
 ```
-python scripts/slice_fasta.py 298 250 data/Cp_EF1a_tx_cds.fasta data/dsRNA_sequence_EF1a_250bp.fasta
+python scripts/slice_fasta.py 298 250 data/Cparasitica_EF1a_CDS.fasta data/dsRNA_sequence_EF1a_250bp.fasta
 ```
 
 This will produce a new `.fasta` file called `data/dsRNA_sequence_EF1a_250bp.fasta`, which contains the desired sequence.
@@ -151,19 +169,20 @@ This will produce a new `.fasta` file called `data/dsRNA_sequence_EF1a_250bp.fas
 
 All that's left to do now is to run one final BLAST, verifying that our chosen dsRNA sequence aligns with all four species in the way we would expect. Return to NCBI nucleotide BLAST, and upload the `data/dsRNA_sequence_EF1a_250bp.fasta` file as the query sequence, with all 4 fungal species added.
 
-![NCBI BLAST with final dsRNA sequence](img/ncbiBLAST_final_dsRNA_seq.png)
+![](img/final_dsRNA_blast_search_EF1a.png)
 
 In order to recover all 10 original hits from the *EF1a* CDS BLAST for this specific region and set of species, I did need to decrease the search stringency by changing the `Program Selection` -> `Optimize for` setting from `Highly similar sequences (megablast)` to `More dissimilar sequences (discontinuous megablast)`. We are still considering this valid, with the idea that the ultimate test of effectiveness is still the biological result, and that these BLAST parameter thresholds are somewhat arbitrary.
 
-![NCBI BLAST with final dsRNA sequence results - descriptions](img/ncbiBLAST_finaldsRNA_descriptions.png)
+![](img/final_dsRNA_blast_results_descriptions_EF1a.png)
 
-![NCBI BLAST with final dsRNA sequence results - graphic summary](img/ncbiBLAST_finaldsRNA_graphicsummary.png)
+![](img/final_dsRNA_blast_results_graphic_EF1a.png)
 
-These outputs show us the same 10 hits from the CDS blast, this time aligning only to the 250bp dsRNA sequence. Notice the near-total coverage across all hits in the graphic summary. Hopefully, this will translate to growth inhibition *in vitro*!
+These outputs show us the same 10 hits from the CDS blast (plus two low-scoring alignments), this time aligning only to the 250bp dsRNA sequence. Notice the near-total coverage across all hits in the graphic summary. Hopefully, this will translate to growth inhibition *in vitro*!
+
+#### Repeat the process with other target genes
+
+Data files from repeating this process with beta-tubulin (*BTUB*) are stored in the `data` folder.
 
 #### Order oligos to produce dsRNA molecules
 
 The final task in this process is now to order DNA molecules with the 250bp sequence stored in `data/dsRNA_sequence_EF1a_250bp.fasta`, and use molecular kits to convert these molecules to dsRNA.
-
-Next steps include designing other dsRNA sequences for alternate target genes, and designing scrambled dsRNAs with fluorescent labels for the uptake assay.
-
