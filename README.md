@@ -181,7 +181,7 @@ These outputs show us the same 10 hits from the CDS blast (plus two low-scoring 
 
 #### Repeat the process with other target genes
 
-Data files from repeating this process with beta-tubulin (*BTUB*) are stored in the `data` folder.
+Data files from repeating this process with the other target genes, to varying degrees of success, are stored in the `data` folder.
 
 #### Order oligos to produce dsRNA molecules
 
