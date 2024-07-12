@@ -183,6 +183,11 @@ These outputs show us the same 10 hits from the CDS blast (plus two low-scoring 
 
 Data files from repeating this process with the other target genes, to varying degrees of success, are stored in the `data` folder.
 
+Exceptions:
+* For *BTUB*, I used `Ophiostoma novo-ulmi (taxid:42373)` instead of `Ophiostoma novo-ulmi subsp. novo-ulmi (taxid:170179)` to recover alignments for that species.
+* The 28S1 rRNA gene had good hits in the *A. psidii* genome, and the partial CDS sequence from there mapped to *C. parasitica*. But the gene models in the mapped region of *C. parasitica* were too short and fragmented to use.
+* For *ATC*, *MAPK*, and *CYP450*, the NCBI BLAST search in the *A. psidii* genome only returns hits for *EF1a*, *BTUB*, and some other ITS and rRNA regions. Maybe these short primer sequences are not specific enough to single out their target gene genome-wide?
+
 #### Order oligos to produce dsRNA molecules
 
 The final task in this process is now to order DNA molecules with the 250bp sequence stored in `data/dsRNA_sequence_EF1a_250bp.fasta`, and use molecular kits to convert these molecules to dsRNA.
