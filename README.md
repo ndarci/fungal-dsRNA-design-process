@@ -89,7 +89,7 @@ To get the transcript/CDS sequence for this gene, click the blue and red exon/in
 
 ![](img/Cparasitica_EF1a_sequence.png)
 
-Scroll down to `Transcript(1867 bp)/CDS Sequence(1395 bp)`, and copy the coding sequence (CDS) only (i.e. the red characters).
+Scroll down to `Transcript(1785 bp)/CDS Sequence(1395 bp)`, and copy the coding sequence (CDS) only (i.e. the red characters).
 
 Open another text file, input another useful FASTA header like `>Cparasitica_EF1a_CDS_355033`, and paste in the *Cryphonectria* *EF1a* CDS sequence. Save this file as `data/Cparasitica_EF1a_CDS.fasta`, and clean it up with:
 
