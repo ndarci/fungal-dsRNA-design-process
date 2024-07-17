@@ -216,4 +216,4 @@ From here, repeat this process with the other two pathogen species in the *EF1a*
 
 #### Order oligos to produce dsRNA molecules
 
-The final task in this process is now to order DNA molecules with the 250bp sequence stored in `data/dsRNA_sequence_Cparasitica_EF1a_250bp.fasta`, and use molecular kits to convert these molecules to dsRNA.
+The final task in this process is now to order DNA molecules with the 250bp sequences stored in each of the `data/dsRNA_sequence_*.fasta` files, and use molecular kits to convert these molecules to dsRNA.
